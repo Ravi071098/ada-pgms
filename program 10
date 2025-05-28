@@ -1,0 +1,99 @@
+/* 10. Design and implement C/C++ Program to sort a given set of n integer elements
+using Quick Sort method and compute its time complexity. Run the program for 
+varied values of n> 5000 and record the time taken to sort. Plot a graph of the time*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define MAX_SIZE 100000
+
+void swap(int *a, int *b)
+{
+    int temp = *a;
+    *a = *b;
+    *b = temp;
+}
+int partition(int arr[], int low, int high)
+{
+	int pivot = arr[high]; 
+	int i = (low - 1); 
+	for (int j = low; j <= high - 1; j++)
+	{
+		if (arr[j] <= pivot)
+		{
+			i++;
+			swap(&arr[i], &arr[j]);
+		}
+	}
+	swap(&arr[i + 1], &arr[high]);
+	return (i + 1);
+}
+void quickSort(int arr[], int low, int high)
+{
+	if (low < high)
+	{
+		int pi = partition(arr, low, high);
+		quickSort(arr, low, pi - 1);
+		quickSort(arr, pi + 1, high);
+	}
+}
+int main()
+{
+	int arr[MAX_SIZE];
+	int n;
+	FILE *fp = fopen("time_complexity_data.csv", "w");
+	if (fp == NULL)
+	{
+		printf("Error opening file.\n");
+		return 1;
+	}
+	fprintf(fp, "n,time(ms)\n");
+	printf("Running Quick Sort for varied values of n (n > 5000)...\n"
+	      );
+	for (n = 5000; n <= 50000; n += 5000)
+	{
+		for (int i = 0; i < n; i++)
+		{
+			arr[i] = rand() % 100000;
+		}
+		clock_t start = clock();
+		quickSort(arr, 0, n - 1);
+		clock_t end = clock();
+		double time_taken = ((double)(end - start)) * 1000.0 /
+		                    CLOCKS_PER_SEC;
+		printf("n = %d\tTime = %.3f ms\n", n, time_taken);
+		fprintf(fp, "%d,%.3f\n", n, time_taken);
+	}
+	fclose(fp);
+	printf("\nResults saved to 'time_complexity_data.csv'\n");
+	return 0;
+}
+/* OUTPUT
+time_complexity_data.csv
+n time(ms)
+5000 0
+10000 1
+15000 2
+20000 3
+C:\Users\jayap\Desktop\2025-2025-Even Semester\BCS401-Analysis and Design of Algorithms\404 Lab Programs\10 Prg\Quick Sort_csv.c Friday, 18 April, 2025 01:39 PM
+-5-
+25000 3
+30000 3
+35000 4
+40000 4
+45000 5
+50000 7
+*/
+
+# Python Code to Plot Graph
+import pandas as pd
+import matplotlib.pyplot as plt
+data = pd.read_csv('C:/Users/jayap/Desktop/2025-2025-Even
+Semester/BCS401-Analysis and Design of Algorithms/404 Lab Programs/10
+Prg/time_complexity_data.csv')
+plt.plot(data['n'], data['time(ms)'], marker='o', linestyle='-')
+plt.title('Quick Sort: Time vs. Number of Elements')
+plt.xlabel('Number of Elements (n)')
+plt.ylabel('Time Taken (ms)')
+plt.grid(True)
+plt.show()
+OUTPUT: Quick Sort Time Complexity Graph
