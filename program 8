@@ -1,0 +1,46 @@
+/*ADA 8. Design and implement C/C++ Program to find a subset of
+a given set S = {sl , s2,.....,sn} of n positive integers
+whose sum is equal to a given positive integer d.
+*/
+#include <stdio.h>
+int s[10], d, n, set[10], count = 0, flag = 0;
+void display(int count)
+{
+	printf("\t{ ");
+	for (int i = 0; i < count; i++) printf("%d ", set[i]);
+	printf("}\n");
+}
+void subset(int sum, int i)
+{
+	if (sum == d) {
+		flag = 1;
+		display(count);
+		return;
+	}
+	if (sum > d || i >= n) return;
+	set[count++] = s[i];
+	subset(sum + s[i], i + 1);
+	count--;
+	subset(sum, i + 1);
+}
+
+void main()
+{
+	printf("Enter total no. of elements: ");
+	scanf("%d", &n);
+	printf("Enter set values: ");
+	for (int i = 0; i < n; i++) scanf( "%d", &s[i]);
+	printf("Enter sum: ");
+	scanf("%d", &d);
+	printf("Subsets:\n");
+	subset(0, 0);
+	if (!flag) printf("No solution exists.\n");
+}
+/* OUTPUT
+Enter total no. of elements: 4
+Enter set values: 3 5 7 8
+Enter sum: 8
+Subsets:
+{ 3 5 }
+{ 8 }
+*/
