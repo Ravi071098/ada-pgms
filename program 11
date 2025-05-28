@@ -1,0 +1,100 @@
+/* 11. Design and implement C/C++ Program to sort a given set of
+n integer elements using Merge Sort method and compute its time
+complexity. Run the program for varied values of n> 5000, and record
+the time taken to sort. Plot a graph of the time taken versus n.
+The elements can be read from a file or can be generated using
+the random number generator.
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#define MAX_SIZE 100000
+void merge(int arr[], int l, int m, int r)
+{
+	int i, j, k;
+	int n1 = m - l + 1;
+	int n2 = r - m;
+	int L[50000], R[50000];
+	for (i = 0; i < n1; i++)
+		L[i] = arr[l + i];
+	for (j = 0; j < n2; j++)
+		R[j] = arr[m + 1 + j];
+	i = 0;j = 0;k = l;
+	while (i < n1 && j < n2)
+	{
+		if (L[i] <= R[j]) arr[k++] = L[i++];
+		else arr[k++] = R[j++];
+	}
+	while (i < n1) arr[k++] = L[i++];
+	while (j < n2) arr[k++] = R[j++];
+}
+void mergeSort(int arr[], int l, int r)
+{
+	if (l < r)
+	{
+		int m = l + (r - l) / 2;
+		mergeSort(arr, l, m);
+		mergeSort(arr, m + 1, r);
+		merge(arr, l, m, r);
+	}
+}
+int main()
+{
+	int arr[MAX_SIZE];
+	int n;
+	FILE *fp = fopen("time_complexity_data.csv", "w");
+	if (fp == NULL)
+	{
+		printf("Error opening file.\n");
+		return 1;
+	}
+	fprintf(fp, "n,time(ms)\n");
+	printf("Running Merge Sort for different values of n (n >5000)...\n");
+	for (n = 5000; n <= 50000; n += 5000)
+	{
+		for (int i = 0; i < n; i++)
+		{
+			arr[i] = rand() % 100000;
+		}
+		clock_t start = clock();
+		mergeSort(arr, 0, n - 1);
+		clock_t end = clock();
+		double time_taken = ((double)(end - start)) * 1000.0 /
+		                    CLOCKS_PER_SEC;
+		printf("n = %d\tTime = %.3f ms\n", n, time_taken);
+		fprintf(fp, "%d,%.3f\n", n, time_taken);
+	}
+	fclose(fp);
+	printf("\nResults saved in 'time_complexity_data.csv'.\n");
+	return 0;
+}
+/* OUTPUT
+time_complexity_data.csv
+n time(ms)
+5000 2
+10000 4
+15000 6
+20000 7
+25000 9
+30000 10
+C:\Users\jayap\Desktop\2025-2025-Even Semester\BCS401-Analysis and Design of Algorithms\404 Lab Programs\11 Prg\merge_sort_csv.c Friday, 18 April, 2025 01:58 PM
+-5-
+35000 12
+40000 12
+45000 14
+50000 16
+*/
+
+# Python Code to Plot Graph
+import pandas as pd
+import matplotlib.pyplot as plt
+data = pd.read_csv('C:/Users/jayap/Desktop/2025-2025-Even
+Semester/BCS401-Analysis and Design of Algorithms/404 Lab Programs/11
+Prg/time_complexity_data.csv')
+plt.plot(data['n'], data['time(ms)'], marker='o', linestyle='-')
+plt.title('Merge Sort: Time vs. Number of Elements')
+plt.xlabel('Number of Elements (n)')
+plt.ylabel('Time Taken (ms)')
+plt.grid(True)
+plt.show()
+
