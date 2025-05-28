@@ -1,0 +1,70 @@
+/* 7. Design and implement C/C++ Program to solve discrete Knapsack
+and continuous Knapsack
+problems using greedy approximation method.
+*/
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct
+{
+	int weight, value;
+	double ratio;
+} Item;
+int cmp(const void *a, const void *b)
+{
+	return ((Item *)b)->ratio > ((Item *)a)->ratio ? 1 : -1;
+}
+int discreteKnapsack(Item *items, int n, int cap)
+{
+	qsort(items, n, sizeof(Item), cmp);
+	int val = 0, w = 0;
+	for (int i = 0; i < n && w < cap; i++)
+		if (w + items[i].weight <= cap) w += items[i].weight, val +=
+			        items[i].value;
+	return val;
+    }
+double fractionalKnapsack(Item *items, int n, int cap)
+{
+	qsort(items, n, sizeof(Item), cmp);
+	double val = 0.0;
+	int w = 0;
+	for (int i = 0; i < n && w < cap; i++)
+	{
+		if (w + items[i].weight <= cap) w += items[i].weight, val +=
+			        items[i].value;
+		else
+		{
+			val += items[i].ratio * (cap - w);
+			break;
+		}
+	}
+	return val;
+}
+int main()
+{
+	int n, cap;
+	printf("Enter number of items and knapsack capacity: ");
+	scanf("%d %d", &n, &cap);
+	Item *items = malloc(n * sizeof(Item));
+	    printf("Enter weight and value of each item:\n");
+	for (int i = 0; i < n; i++)
+	{
+		scanf("%d %d", &items[i].weight, &items[i].value);
+		items[i].ratio = (double)items[i].value / items[i].weight;
+	}
+	printf("Approximate (0/1) Knapsack value: %d\n", discreteKnapsack(
+	           items, n, cap));
+	printf("Exact (Fractional) Knapsack value: %.2f\n",
+	       fractionalKnapsack(items, n, cap));
+	free(items);
+	return 0;
+}
+/* OUTPUT
+Enter number of items and knapsack capacity: 4 50
+Enter weight and value of each item:
+10 60
+20 100
+30 120
+5 50
+Approximate (0/1) Knapsack value: 210
+Exact (Fractional) Knapsack value: 270.00
+*/
